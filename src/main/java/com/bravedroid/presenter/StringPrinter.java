@@ -6,22 +6,27 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class StringPrinter {
+public class StringPrinter implements WhiteSpaceRemover.OnTextChangeListener {
   private WhiteSpaceRemover whiteSpaceRemover;
   private BufferedReader input;
-  private String inputFromUser;
 
-  public StringPrinter(WhiteSpaceRemover whiteSpaceRemover) {
-    this.whiteSpaceRemover = whiteSpaceRemover;
+  public StringPrinter() {
+    whiteSpaceRemover = new WhiteSpaceRemover(this);
     input = new BufferedReader(new InputStreamReader(System.in));
   }
 
+
   public void readInputFromUser() throws IOException {
     System.out.println("Please enter your text");
-    inputFromUser = input.readLine();
+    String inputFromUser = input.readLine();
+    whiteSpaceRemover.setInputText(inputFromUser);
+    whiteSpaceRemover.removeWhiteSpace();
   }
 
-  public void printText() {
-    System.out.println("output =" + whiteSpaceRemover.removeWhiteSpace(inputFromUser));
+  @Override
+  public void onTextChange(String updatedText) {
+    System.out.println("output = " + updatedText);
+    whiteSpaceRemover.unsubscribe();
   }
+
 }
